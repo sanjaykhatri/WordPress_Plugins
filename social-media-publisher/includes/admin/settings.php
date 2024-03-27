@@ -13,6 +13,16 @@ class Social_Media_Publisher_Settings
     public function add_settings_page()
     {
         add_menu_page('Social Media Publisher', 'Social Media', 'manage_options', 'social-media-publisher', array($this, 'settings_page_content'));
+
+        // Add submenu
+            add_submenu_page(
+                'social-media-publisher',
+                __('Post to Twitter', 'social-media-publisher'),
+                __('Post to Twitter', 'social-media-publisher'),
+                'manage_options',
+                'post-to-twitter',
+                 array(new Social_Media_Publisher_API, 'twitter_post_page_callback'),
+            );
     }
 
     // Settings page content.

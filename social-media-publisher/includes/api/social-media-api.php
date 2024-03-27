@@ -6,24 +6,9 @@ class Social_Media_Publisher_API
 {
     public function __construct()
     {
-        add_action('admin_menu', array($this, 'add_twitter_post_page'));
         add_action('admin_post_submit_post_to_twitter', array($this, 'submit_post_to_twitter'));
     }
-    //Add Post page
-    public function add_twitter_post_page()
-    {
-        add_menu_page(
-            'Post to Twitter',
-            'Post to Twitter',
-            'manage_options',
-            'post-to-twitter',
-            array($this, 'twitter_post_page_callback'),
-            'dashicons-twitter',
-            30
-        );
-    }
-
-
+    
     // twitter_post_page_callback
     public function twitter_post_page_callback()
     {
@@ -38,10 +23,21 @@ class Social_Media_Publisher_API
             <?php Social_Media_Publisher_Notices::display_notices(); ?>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <?php wp_nonce_field('submit_post_to_twitter', 'submit_post_to_twitter_nonce'); ?>
-                <label for="twitter_post_content">Tweet Content:</label><br>
-                <textarea id="twitter_post_content" name="twitter_post_content" rows="5" cols="50"></textarea><br><br>
+                <label for="twitter_post_content"><?php esc_html_e('Tweet Content:', 'social-media-publisher'); ?></label><br>
+                <?php
+                    // Get existing tweet content if available
+                     $tweet_content = isset($_POST['twitter_post_content']) ? $_POST['twitter_post_content'] : '';
+                     // Set editor settings
+                     $editor_settings = array(
+                        'textarea_name' => 'twitter_post_content',
+                        'textarea_rows' => 4,
+                        'wpautop' => false
+                    );
+                    // Display classic editor
+                    wp_editor($tweet_content, 'twitter_status_editor', $editor_settings);
+                ?>
                 <input type="hidden" name="action" value="submit_post_to_twitter">
-                <input type="submit" name="submit_post_to_twitter" value="Post to Twitter" class="button-primary">
+                <input type="submit" name="submit_post_to_twitter" value="<?php esc_attr_e('Update Status', 'social-media-publisher'); ?>">
             </form>
         </div>
 <?php
